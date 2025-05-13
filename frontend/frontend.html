@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .result {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Backend API Tester</h1>
+    
+    <div class="container">
+        <h2>Root Endpoint Test</h2>
+        <p>Test the root endpoint to get the hello world message</p>
+        <button id="testRoot">Get Hello Message</button>
+        <div id="rootResult" class="result"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Formatted Name Test</h2>
+        <p>Test the formatted_name endpoint by providing first and last names</p>
+        <form id="nameForm">
+            <input type="text" id="firstName" placeholder="First Name" required>
+            <input type="text" id="lastName" placeholder="Last Name" required>
+            <button type="submit">Format Name</button>
+        </form>
+        <div id="nameResult" class="result"></div>
+    </div>
+
+    <script>
+        // Set the base URL for your API
+        const apiBaseUrl = '/api'; // Updated for Nginx routing to the backend        // Test the root endpoint
+        document.getElementById('testRoot').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${apiBaseUrl}/`);
+                const data = await response.json();
+                document.getElementById('rootResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('rootResult').textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Test the formatted_name endpoint
+        document.getElementById('nameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            
+            try {
+                const response = await fetch(`${apiBaseUrl}/formatted_name?first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}`);
+                const data = await response.json();
+                document.getElementById('nameResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('nameResult').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
